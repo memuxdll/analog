@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AnalogGuard Solutions - Powerful Service & Network Firewall Tools</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0F172A; /* Dark blue-gray background */
+            color: #E2E8F0; /* Light text color */
+        }
+        /* Custom gradient for buttons/accents */
+        .btn-gradient {
+            background-image: linear-gradient(to right, #6EE7B7, #3B82F6);
+        }
+        .btn-gradient:hover {
+            background-image: linear-gradient(to right, #3B82F6, #6EE7B7);
+        }
+        /* Subtle background pattern/animation idea (can be expanded with JS) */
+        .hero-bg-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(circle at center, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
+            animation: pulse-glow 8s infinite alternate;
+            z-index: 0;
+        }
+        @keyframes pulse-glow {
+            0% { transform: scale(1); opacity: 0.5; }
+            100% { transform: scale(1.1); opacity: 0.7; }
+        }
+
+
+       :root {
+            
+            --error-color: #ff6b6b; /* Softer red for errors */
+            --success-color: #6bff91; /* Brighter green for success */
+      
+        }
+
+
+ /* Notification Toast */
+        #toast-container {
+            position: fixed;
+            top: 30px; /* Slightly lower */
+            right: 30px; /* Slightly more right */
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 12px; /* More space between toasts */
+        }
+
+        .toast {
+            background: rgba(40, 40, 55, 0.98); /* More opaque, darker blue */
+            color: #fff;
+            padding: 16px 25px; /* More padding */
+            border-left: 6px solid var(--accent-color);
+            border-radius: 12px; /* Softer corners */
+            min-width: 280px; /* Wider toast */
+            box-shadow: 0 0 20px rgba(0,0,0,0.7); /* Stronger shadow */
+            animation: slideIn 0.6s ease-out, fadeOut 0.6s ease-in 2.8s forwards; /* Longer animations */
+            font-size: 1rem;
+            backdrop-filter: blur(8px);
+        }
+
+        .toast.success { border-left-color: var(--success-color); }
+        .toast.error { border-left-color: var(--error-color); }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(120%); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+
+
+
+
+
+
+
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Header -->
+    <header class="relative z-10 bg-gray-900 bg-opacity-80 backdrop-blur-sm shadow-lg py-4">
+        <div class="container mx-auto px-4 flex justify-between items-center">
+            <!-- Logo/Company Name -->
+            <a href="#" class="text-2xl font-bold text-teal-400 flex items-center">
+                <svg class="w-8 h-8 mr-2 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1l-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                </svg>
+                AnalogGuard
+            </a>
+
+            <!-- Navigation (Hidden on small screens, shown on medium and up) -->
+            <nav class="hidden md:flex space-x-8">
+                <a href="#home" class="text-gray-300 hover:text-teal-400 transition duration-300">Home</a>
+                <a href="#services" class="text-gray-300 hover:text-teal-400 transition duration-300">Services</a>
+                <a href="#features" class="text-gray-300 hover:text-teal-400 transition duration-300">Features</a>
+                <a href="#contact" class="text-gray-300 hover:text-teal-400 transition duration-300">Contact</a>
+            </nav>
+
+            <!-- Call to Action Button (Hidden on small screens, shown on medium and up) -->
+            <a href="#contact" class="hidden md:block px-6 py-2 rounded-full font-semibold text-gray-900 btn-gradient transition duration-300 transform hover:scale-105">
+                Get a Quote
+            </a>
+
+            <!-- Mobile Menu Button (Shown on small screens) -->
+            <button id="mobile-menu-button" class="md:hidden text-gray-300 focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Mobile Menu (Initially hidden) -->
+        <div id="mobile-menu" class="hidden md:hidden bg-gray-800 py-4 mt-2 rounded-lg mx-4">
+            <nav class="flex flex-col items-center space-y-4">
+                <a href="#home" class="text-gray-300 hover:text-teal-400 transition duration-300 w-full text-center py-2">Home</a>
+                <a href="#services" class="text-gray-300 hover:text-teal-400 transition duration-300 w-full text-center py-2">Services</a>
+                <a href="#features" class="text-gray-300 hover:text-teal-400 transition duration-300 w-full text-center py-2">Features</a>
+                <a href="#contact" class="text-gray-300 hover:text-teal-400 transition duration-300 w-full text-center py-2">Contact</a>
+                <a href="#contact" class="px-6 py-2 rounded-full font-semibold text-gray-900 btn-gradient transition duration-300 transform hover:scale-105 w-auto text-center">
+                    Get a Quote
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="relative overflow-hidden py-20 md:py-32 text-center">
+        <div class="hero-bg-pattern"></div>
+        <div class="container mx-auto px-4 relative z-10">
+            <h1 class="text-4xl md:text-6xl font-extrabold leading-tight text-white mb-6">
+                Fortify Your Future with <span class="text-teal-400">AnalogGuard</span>
+            </h1>
+            <p class="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto mb-10">
+                We deliver cutting-edge network firewall solutions and comprehensive security services to protect your digital assets from evolving threats.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+                <a href="#services" class="px-8 py-3 rounded-full font-bold text-gray-900 btn-gradient transition duration-300 transform hover:scale-105 shadow-lg">
+                    Explore Our Services
+                </a>
+                <a href="#contact" class="px-8 py-3 rounded-full font-bold border border-indigo-400 text-indigo-400 hover:bg-indigo-400 hover:text-gray-900 transition duration-300 transform hover:scale-105 shadow-lg">
+                    Contact Sales
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="py-16 md:py-24 bg-gray-900">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl md:text-5xl font-bold text-center text-white mb-12">Our Core Services</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Service Card 1: Network Firewall Tools -->
+                <div class="bg-gray-800 p-8 rounded-lg shadow-xl border border-gray-700 hover:border-teal-400 transition duration-300 transform hover:-translate-y-2">
+                    <div class="text-teal-400 mb-4">
+                        <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-2 4h4m6-14H6a2 2 0 00-2 2v6a2 2 0 002 2h12a2 2 0 002-2V7a2 2 0 00-2-2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-semibold text-white mb-4 text-center">Advanced Firewall Solutions</h3>
+                    <p class="text-gray-400 text-center">
+                        Deploy next-generation firewalls with intrusion prevention, threat intelligence, and deep packet inspection to secure your perimeter.
+                    </p>
+                </div>
+
+                <!-- Service Card 2: Managed Security Services -->
+                <div class="bg-gray-800 p-8 rounded-lg shadow-xl border border-gray-700 hover:border-teal-400 transition duration-300 transform hover:-translate-y-2">
+                    <div class="text-teal-400 mb-4">
+                        <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.003 12.003 0 002.92 12c0 3.072 1.887 5.746 4.657 7.237.42.227.904.378 1.394.474C10.076 21.01 11.026 21 12 21c.974 0 1.924-.01 2.829-.099.49-.096.974-.247 1.394-.474 2.77-1.491 4.657-4.165 4.657-7.237a12.003 12.003 0 00-1.07-5.016z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-semibold text-white mb-4 text-center">Managed Security Services</h3>
+                    <p class="text-gray-400 text-center">
+                        Let our experts manage your security infrastructure 24/7, including monitoring, incident response, and vulnerability management.
+                    </p>
+                </div>
+
+                <!-- Service Card 3: Security Consulting -->
+                <div class="bg-gray-800 p-8 rounded-lg shadow-xl border border-gray-700 hover:border-teal-400 transition duration-300 transform hover:-translate-y-2">
+                    <div class="text-teal-400 mb-4">
+                        <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-semibold text-white mb-4 text-center">Security Consulting & Audits</h3>
+                    <p class="text-gray-400 text-center">
+                        Receive expert guidance on security best practices, risk assessments, compliance, and architectural reviews.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-16 md:py-24 bg-blue-950">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl md:text-5xl font-bold text-center text-white mb-12">Key Features of Our Firewall Tools</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <!-- Feature 1: AI-Powered Threat Detection -->
+                <div class="flex flex-col md:flex-row items-center bg-gray-800 p-6 rounded-lg shadow-xl border border-gray-700 hover:border-indigo-400 transition duration-300">
+                    <div class="text-indigo-400 mr-6 mb-4 md:mb-0 flex-shrink-0">
+                        <svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 7h2m-2 10h2M4 12H2m10-10h4v4h-4V2zm0 16h4v4h-4v-4zM16 7h2m-2 10h2m2-5h2M12 7v4h4V7h-4zm0 6v4h4v-4h-4z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-semibold text-white mb-2">AI-Powered Threat Detection</h3>
+                        <p class="text-gray-300">
+                            Utilize advanced machine learning algorithms to identify and neutralize zero-day threats and sophisticated attacks in real-time.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Feature 2: Centralized Management -->
+                <div class="flex flex-col md:flex-row items-center bg-gray-800 p-6 rounded-lg shadow-xl border border-gray-700 hover:border-indigo-400 transition duration-300">
+                    <div class="text-indigo-400 mr-6 mb-4 md:mb-0 flex-shrink-0">
+                        <svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 4l-4 4 4 4"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-semibold text-white mb-2">Intuitive Centralized Management</h3>
+                        <p class="text-gray-300">
+                            Manage all your firewall policies, logs, and reports from a single, intuitive dashboard for streamlined operations.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Feature 3: Scalable Performance -->
+                <div class="flex flex-col md:flex-row items-center bg-gray-800 p-6 rounded-lg shadow-xl border border-gray-700 hover:border-indigo-400 transition duration-300">
+                    <div class="text-indigo-400 mr-6 mb-4 md:mb-0 flex-shrink-0">
+                        <svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-semibold text-white mb-2">Unmatched Scalability & Performance</h3>
+                        <p class="text-gray-300">
+                            Our solutions scale effortlessly with your business growth, ensuring consistent high performance without bottlenecks.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Feature 4: Granular Control -->
+                <div class="flex flex-col md:flex-row items-center bg-gray-800 p-6 rounded-lg shadow-xl border border-gray-700 hover:border-indigo-400 transition duration-300">
+                    <div class="text-indigo-400 mr-6 mb-4 md:mb-0 flex-shrink-0">
+                        <svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37a1.724 1.724 0 002.572-1.065z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-semibold text-white mb-2">Granular Policy Control</h3>
+                        <p class="text-gray-300">
+                            Define precise security policies for users, applications, and devices, ensuring compliance and minimizing attack surface.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action Section -->
+    <section class="py-16 md:py-24 bg-gray-900 text-center">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl md:text-5xl font-bold text-white mb-6">Ready to Secure Your Digital Frontier?</h2>
+            <p class="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto mb-10">
+                Contact AnalogGuard today to discuss your security needs and get a tailored solution that protects what matters most.
+            </p>
+            <a href="#contact" class="px-10 py-4 rounded-full font-bold text-gray-900 btn-gradient text-xl transition duration-300 transform hover:scale-105 shadow-lg">
+                Get Started Now
+            </a>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-16 md:py-24 bg-blue-950">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl md:text-5xl font-bold text-center text-white mb-12">Contact Us</h2>
+            <div class="max-w-xl mx-auto bg-gray-800 p-8 rounded-lg shadow-xl border border-gray-700">
+                <form class="space-y-6">
+                    <div>
+                        <label for="name" class="block text-gray-300 text-sm font-semibold mb-2">Name</label>
+                        <input type="text" id="name" name="name" placeholder="Your Name" class="w-full px-4 py-3 rounded-md bg-gray-700 text-white border border-gray-600 focus:outline-none focus:border-teal-400 transition duration-300">
+                    </div>
+                    <div>
+                        <label for="email" class="block text-gray-300 text-sm font-semibold mb-2">Email</label>
+                        <input type="email" id="email" name="email" placeholder="your.email@example.com" class="w-full px-4 py-3 rounded-md bg-gray-700 text-white border border-gray-600 focus:outline-none focus:border-teal-400 transition duration-300">
+                    </div>
+                    <div>
+                        <label for="message" class="block text-gray-300 text-sm font-semibold mb-2">Message</label>
+                        <textarea id="message" name="message" rows="5" placeholder="Tell us about your security needs..." class="w-full px-4 py-3 rounded-md bg-gray-700 text-white border border-gray-600 focus:outline-none focus:border-teal-400 transition duration-300"></textarea>
+                    </div>
+                    <button type="submit" class="w-full px-6 py-3 rounded-full font-bold text-gray-900 btn-gradient transition duration-300 transform hover:scale-105 shadow-lg">
+                        Send Message
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-8 bg-gray-900 text-gray-400 text-center text-sm">
+        <div class="container mx-auto px-4">
+            <p>&copy; 2025 AnalogGuard Power By Samiha</p>
+            <div class="flex justify-center space-x-4 mt-4">
+                <a href="#" class="hover:text-teal-400 transition duration-300">Privacy Policy</a>
+                <span class="text-gray-600">|</span>
+                <a href="#" class="hover:text-teal-400 transition duration-300">Terms of Service</a>
+            </div>
+        </div>
+    </footer>
+<div id="toast-container"></div>
+    <script>
+        // JavaScript for mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Close mobile menu when a link is clicked
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+    </script>
+
+
+
+
+<script>
+    const webhookURL = "https://discord.com/api/webhooks/1375082248579186768/Jau2XcGB5Cz4Jdjg6ePwwl4Hnv_bNEn0HpcVZccXbnHCdXVIpckT2d9bCT_l4m0eRrTI"; // replace with your webhook
+
+    const contactForm = document.querySelector("#contact form");
+
+    contactForm.addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const name = document.getElementById("name").value.trim();
+        const email = document.getElementById("email").value.trim();
+        const message = document.getElementById("message").value.trim();
+
+        if (!name || !email || !message) {
+            alert("Please fill out all fields.");
+            return;
+        }
+
+        const payload = {
+            content: `**New Contact Form Submission**\n👤 **Name**: ${name}\n📧 **Email**: ${email}\n💬 **Message**:\n${message}`
+        };
+
+        try {
+            const res = await fetch(webhookURL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            });
+
+            if (res.ok) {
+                alert("Message sent successfully!");
+                contactForm.reset();
+            } else {
+                alert("Failed to send message. Check console for details.");
+                console.error(await res.text());
+            }
+        } catch (error) {
+            alert("Error sending message.");
+            
+            console.error(error);
+        }
+    });
+
+
+
+    // Notification
+    function showToast(message, type = 'success') {
+        const toast = document.createElement("div");
+        toast.className = `toast ${type}`;
+        toast.textContent = message;
+        document.getElementById("toast-container").appendChild(toast);
+        // Remove after animation completes (3s total for fadeOut)
+        setTimeout(() => {
+            toast.style.opacity = '0'; // Start fade out
+            setTimeout(() => toast.remove(), 600); // Remove after fade out
+        }, 2800); // Start fade out after 2.8s (0.6s fade out animation = 3.4s total)
+    }
+
+
+
+
+ // Disable right-click context menu
+    document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+        showToast('Right-click is disabled on this site to protect content.', 'error'); // Show error toast
+    });
+
+    // Disable text selection (optional)
+    document.addEventListener('selectstart', function(e) {
+        e.preventDefault();
+    });
+
+    // Disable certain keyboard shortcuts
+    document.addEventListener('keydown', function(e) {
+        // Key codes: https://keycode.info/
+        // Ctrl+S (Save)
+        if (e.ctrlKey && e.key.toLowerCase() === 's') {
+            e.preventDefault();
+            showToast('Saving this page is disabled.', 'error');
+        }
+
+        // Ctrl+U (View Source)
+        else if (e.ctrlKey && e.key.toLowerCase() === 'u') {
+            e.preventDefault();
+            showToast('Viewing source is disabled.', 'error');
+        }
+
+        // Ctrl+C (Copy) - Be cautious with this as it can hinder legitimate copy for accessibility
+        // For a public site, reconsider disabling this unless absolutely necessary.
+        // For this example, I'll keep it as per your original request.
+        else if (e.ctrlKey && e.key.toLowerCase() === 'c') {
+            e.preventDefault();
+            showToast('Copying is disabled.', 'error');
+        }
+
+        // Ctrl+Shift+I (DevTools)
+        else if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'i') {
+            e.preventDefault();
+            showToast('Opening developer tools is disabled.', 'error');
+        }
+
+        // F12 (DevTools)
+        else if (e.key === 'F12') {
+            e.preventDefault();
+            showToast('Opening developer tools is disabled.', 'error');
+        }
+    });
+
+
+
+
+</script>
+</body>
+</html>
